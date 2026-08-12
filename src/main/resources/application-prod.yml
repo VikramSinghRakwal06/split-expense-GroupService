@@ -1,0 +1,44 @@
+# Production profile.
+# No secret has a usable fallback here: JWT_SECRET, DB_URL, DB_USERNAME and
+# DB_PASSWORD must be supplied by the environment or startup fails.
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: ${DB_POOL_MAX:20}
+      minimum-idle: ${DB_POOL_MIN:5}
+
+  jpa:
+    show-sql: false
+
+  flyway:
+    # Never allow a running service to drop the schema it depends on.
+    clean-disabled: true
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD}
+
+payflow:
+  jwt:
+    secret: ${JWT_SECRET}
+
+management:
+  endpoint:
+    health:
+      show-details: when-authorized
+
+springdoc:
+  swagger-ui:
+    # The interactive UI is not exposed in production; /v3/api-docs still is,
+    # so gateways and client generators can consume the contract.
+    enabled: ${SWAGGER_UI_ENABLED:false}
+
+logging:
+  level:
+    root: WARN
+    com.payflow.wallet: ${LOG_LEVEL:INFO}

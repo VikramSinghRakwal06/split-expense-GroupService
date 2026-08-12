@@ -1,0 +1,29 @@
+# Local development profile.
+# Every value still resolves from an env var first, so a developer can point at a
+# different database or Redis without editing this file.
+spring:
+  jpa:
+    show-sql: ${JPA_SHOW_SQL:true}
+    properties:
+      hibernate:
+        format_sql: true
+
+  flyway:
+    # Convenient locally: lets you wipe and re-migrate a scratch database.
+    clean-disabled: false
+
+management:
+  endpoint:
+    health:
+      show-details: always
+
+springdoc:
+  swagger-ui:
+    enabled: true
+
+logging:
+  level:
+    com.payflow.wallet: ${LOG_LEVEL:DEBUG}
+    org.springframework.security: INFO
+    # Makes the optimistic-locking retries visible while working on the money paths.
+    org.springframework.retry: DEBUG
