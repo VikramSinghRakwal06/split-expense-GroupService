@@ -23,7 +23,7 @@ spring:
       port: ${REDIS_PORT:6379}
       password: ${REDIS_PASSWORD}
 
-payflow:
+splitexpense:
   jwt:
     secret: ${JWT_SECRET}
 
@@ -41,4 +41,4 @@ springdoc:
 logging:
   level:
     root: WARN
-    com.payflow.wallet: ${LOG_LEVEL:INFO}
+    com.splitexpense.group: ${LOG_LEVEL:INFO}

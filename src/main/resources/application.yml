@@ -1,20 +1,20 @@
 spring:
   application:
-    name: wallet-service
+    name: group-service
 
   profiles:
     # Local development is the default; override with SPRING_PROFILES_ACTIVE=prod.
     default: dev
 
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/payflow_wallet}
-    username: ${DB_USERNAME:payflow}
-    password: ${DB_PASSWORD:payflow}
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/splitexpense_group}
+    username: ${DB_USERNAME:splitexpense}
+    password: ${DB_PASSWORD:splitexpense}
     driver-class-name: org.postgresql.Driver
     hikari:
-      pool-name: wallet-pool
-      # Every credit/debit retry re-enters the pool, so a wallet under contention can
-      # hold a connection for several short transactions in a row. Sized with headroom.
+      pool-name: group-pool
+      # Every apply retry re-enters the pool, so a contended group can hold a connection
+      # for several short transactions in a row. Sized with headroom.
       maximum-pool-size: ${DB_POOL_MAX:10}
       minimum-idle: ${DB_POOL_MIN:2}
       connection-timeout: 30000
@@ -60,24 +60,26 @@ server:
     include-message: never
     include-stacktrace: never
 
-payflow:
+splitexpense:
   jwt:
     # This service VALIDATES only; it never mints a token. The secret and issuer must
     # match auth-service exactly or every request here fails signature verification.
     secret: ${JWT_SECRET:dev-secret-change-me-this-must-be-at-least-32-bytes-long}
-    issuer: ${JWT_ISSUER:payflow-auth-service}
+    issuer: ${JWT_ISSUER:splitexpense-auth-service}
 
   cache:
-    # Deliberately short. A wallet balance is authoritative in Postgres, and the cache
+    # Deliberately short. A group's balances are authoritative in Postgres, and the cache
     # exists to absorb read traffic, not to be a source of truth; 30s bounds how long a
     # reader can trail a committed write. See CacheConfig for the staleness discussion.
-    balance-ttl: ${CACHE_BALANCE_TTL:30s}
+    balances-ttl: ${CACHE_BALANCES_TTL:30s}
 
-  wallet:
-    # Attempts per credit/debit, including the first, before a movement is reported as
-    # contended. Correctness never depends on this — a movement that exhausts its budget
-    # moved no money — but throughput on a hot wallet does. See WalletMovementService.
-    movement-max-attempts: ${WALLET_MOVEMENT_MAX_ATTEMPTS:3}
+  group:
+    # Attempts per balance apply, including the first, before it is reported as contended.
+    # Correctness never depends on this — an apply that exhausts its budget changed nothing
+    # — but throughput on a busy group does. An apply is more exposed than a single-row
+    # wallet movement was, because it touches one row per participant and loses if it
+    # collides on any of them. See BalanceApplyService.
+    apply-max-attempts: ${GROUP_APPLY_MAX_ATTEMPTS:3}
 
 management:
   endpoints:
@@ -103,4 +105,4 @@ springdoc:
 logging:
   level:
     root: INFO
-    com.payflow.wallet: ${LOG_LEVEL:INFO}
+    com.splitexpense.group: ${LOG_LEVEL:INFO}

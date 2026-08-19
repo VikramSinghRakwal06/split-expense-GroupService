@@ -23,7 +23,7 @@ springdoc:
 
 logging:
   level:
-    com.payflow.wallet: ${LOG_LEVEL:DEBUG}
+    com.splitexpense.group: ${LOG_LEVEL:DEBUG}
     org.springframework.security: INFO
     # Makes the optimistic-locking retries visible while working on the money paths.
     org.springframework.retry: DEBUG

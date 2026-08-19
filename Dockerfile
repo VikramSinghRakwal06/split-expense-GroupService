@@ -15,11 +15,11 @@ RUN mvn -B clean package -DskipTests
 FROM eclipse-temurin:21-jre-alpine AS runtime
 WORKDIR /app
 
-RUN addgroup -S payflow && adduser -S payflow -G payflow
+RUN addgroup -S splitexpense && adduser -S splitexpense -G splitexpense
 
-COPY --from=build /build/target/wallet-service-*.jar app.jar
-RUN chown payflow:payflow app.jar
-USER payflow
+COPY --from=build /build/target/group-service-*.jar app.jar
+RUN chown splitexpense:splitexpense app.jar
+USER splitexpense
 
 EXPOSE 8082
 

@@ -8,11 +8,11 @@
 		<version>4.1.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.payflow</groupId>
-	<artifactId>wallet-service</artifactId>
+	<groupId>com.splitexpense</groupId>
+	<artifactId>group-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>wallet-service</name>
-	<description>PayFlow wallet service: wallet balances and the immutable money ledger</description>
+	<name>group-service</name>
+	<description>SplitExpense group service: groups, membership and pairwise balances</description>
 
 	<properties>
 		<java.version>21</java.version>
